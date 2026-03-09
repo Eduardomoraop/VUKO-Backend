@@ -1,0 +1,35 @@
+/* App.css - Limpio y organizado */
+
+:root {
+  --primary-color: #2563eb;
+  --success-color: #16a34a;
+  --bg-color: #f8fafc;
+  --card-bg: #ffffff;
+}
+
+.app-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: var(--bg-color);
+  margin: 0;
+}
+
+.card {
+  background: var(--card-bg);
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  border: 1px solid #e2e8f0;
+}
+
+.success-badge {
+  color: var(--success-color);
+  background: #dcfce7;
+  padding: 8px 16px;
+  border-radius: 20px;
+  display: inline-block;
+  font-size: 0.9rem;
+}
