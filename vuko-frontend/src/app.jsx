@@ -4,7 +4,12 @@ import './App.css'
 function App() {
   const [data, setData] = useState(null)
 
-  const [formData, setFormData] = useState({ name: '', email: '' })
+  // Estado inicial con los 3 campos que definimos como obligatorios en el Backend
+  const [formData, setFormData] = useState({ 
+    name: '', 
+    email: '', 
+    password: '' 
+  })
 
   useEffect(() => {
     // Llamada a la URL de Render guardada en el .env
@@ -21,6 +26,7 @@ function App() {
 
   const handleSubmit = async (e) =>{
     e.preventDefault();
+    console.log('Enviando datos al servidor...', formData);
 
     try {
       // Petición al servidor (URL del .env + la ruta de registro)
@@ -29,18 +35,19 @@ function App() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(formData), // Enviamos el objeto completo (name, email, password)
       });
 
       const result = await response.json(); 
-      console.log("Datos que llegan del servidor", result);
+      console.log("Respuesta completa del servidor:", result);
       
-
       if (response.ok) {
         alert("¡Usuario registrado con éxito! 🎉");        
-        setFormData({ name: '', email: '' });       
+        // Limpiamos el formulario después del éxito
+        setFormData({ name: '', email: '', password: '' });       
       } else {
-        alert("Error del servidor:" + (result.msg || "Algo salio mal"));
+        // Mostramos el mensaje de error que viene directamente de tu catch en el Backend
+        alert("Error: " + (result.msg || "Error en la validación de datos"));
       }
     } catch (error) {
       console.error("Error en la conexión:", error);
@@ -55,16 +62,27 @@ function App() {
 
         <form className='user-form' onSubmit={handleSubmit}>
           <input
-          name = 'name'
-          placeholder ='Tu nombre'
-          value={formData.name}
-          onChange = {handleChange}
+            name='name'
+            placeholder='Tu nombre'
+            value={formData.name}
+            onChange={handleChange}
+            required
           />
           <input
-          name = 'email'
-          placeholder='Tu correo'
-          value={formData.email}
-          onChange={handleChange}
+            type='email'
+            name='email'
+            placeholder='Tu correo'
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type='password'
+            name='password'
+            placeholder='Tu contraseña'
+            value={formData.password}
+            onChange={handleChange}
+            required
           />
           <button type='submit'>Registrar Usuario</button>
         </form>

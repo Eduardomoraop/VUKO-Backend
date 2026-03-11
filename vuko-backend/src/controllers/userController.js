@@ -6,23 +6,22 @@ const jwt = require ('jsonwebtoken');
 // Función para registrar usuario
 const registerUser = async (req, resp) => {
     try {
-        console.log("Datos recibidos en el backend:", req.body);
-        
+        // Log para ver qué llega exactamente al servidor
+        console.log("Cuerpo recibido:", req.body); 
+
         const newUser = new User(req.body);
 
-        // 1. Guardado
-         await newUser.save();
+        // 1. GUARDADO (Primero aseguramos la base de datos)
+        await newUser.save();
 
-        // 2. LLAMADA A LA IA::
-        let aiAdvice = "Pronto recibiras tu consejo de Vuko.ai";
+        // 2. IA (Opcional: Si falla, que no rompa el registro)
+        let aiAdvice = "Generando consejo...";
         try {
             aiAdvice = await getCareerAdvice(newUser);
-        } catch (error) {
-            console.log("La IA falló, pero el usuario se guardó:", aiError.message);
-            
-        }   
-      
-        // 3. RESPUESTA DINÁMICA:      
+        } catch (iaError) {
+            console.log("Error en IA:", iaError.message);
+        }
+
         resp.status(201).json({ 
             ok: true, 
             user: newUser,
@@ -30,8 +29,14 @@ const registerUser = async (req, resp) => {
         });
 
     } catch (error) {
-        console.log("ERROR REAL EN EL REGISTRO:", error.message);        
-        resp.status(400).json({ ok: false, msg: error.message });        
+        // ESTO ES LO MÁS IMPORTANTE:
+        console.error("ERROR EN REGISTRO:", error); 
+        
+        // Enviamos el mensaje real al Frontend para dejar de adivinar
+        resp.status(400).json({ 
+            ok: false, 
+            msg: error.message || "Error desconocido en el servidor" 
+        });         
     }    
 };
 
