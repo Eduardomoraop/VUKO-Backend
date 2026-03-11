@@ -6,17 +6,23 @@ const jwt = require ('jsonwebtoken');
 // Función para registrar usuario
 const registerUser = async (req, resp) => {
     try {
+        console.log("Datos recibidos en el backend:", req.body);
+        
         const newUser = new User(req.body);
 
-        // 1. LLAMADA A LA IA:
-        const aiAdvice = await getCareerAdvice(newUser);
+        // 1. Guardado
+         await newUser.save();
 
-        // 2. GUARDADO:
-        // Aquí se activa el middleware de Bcrypt que pusimos en el Modelo y se guarda en MongoDB.
-        await newUser.save();
-
-        // 3. RESPUESTA DINÁMICA:
-        // Agregamos 'vukoAdvice' al JSON de respuesta para verlo en Postman.
+        // 2. LLAMADA A LA IA::
+        let aiAdvice = "Pronto recibiras tu consejo de Vuko.ai";
+        try {
+            aiAdvice = await getCareerAdvice(newUser);
+        } catch (error) {
+            console.log("La IA falló, pero el usuario se guardó:", aiError.message);
+            
+        }   
+      
+        // 3. RESPUESTA DINÁMICA:      
         resp.status(201).json({ 
             ok: true, 
             user: newUser,
@@ -24,6 +30,7 @@ const registerUser = async (req, resp) => {
         });
 
     } catch (error) {
+        console.log("ERROR REAL EN EL REGISTRO:", error.message);        
         resp.status(400).json({ ok: false, msg: error.message });        
     }    
 };
