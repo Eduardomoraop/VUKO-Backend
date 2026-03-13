@@ -64,7 +64,7 @@ const loginUser =async (req,resp) => {
         //Verificamos si la contraseña coincide con el hash de la DB
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword){
-            return resp.status(401).json({ok: false, msg: 'contraeña incorrecta'});
+            return resp.status(401).json({ok: false, msg: 'Contraseña incorrecta'});
         }
 
         //Generamos el token (JWT) 
