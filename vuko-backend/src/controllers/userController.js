@@ -90,11 +90,11 @@ const loginUser =async (req,resp) => {
     }
 };
 
-// Funcion para Actualizar usuario
+
 // Funcion para Actualizar usuario
 const updateUser = async (req, resp) => { // Usamos 'resp' para ser consistentes
     try {
-        // IMPORTANTE: Verifica si en tu middleware usaste 'uid' o 'id'
+        
         const uid = req.uid || req.id; 
         
         const { password, email, ...campos } = req.body;
@@ -143,8 +143,8 @@ const getVukoAdvice = async (req, resp) =>{
 
         resp.status(200).json({
             ok: true,
-            msg: 'Consejo generado con exito',
-            vukoAdvice: aiAdvice
+            msg: aiAdvice,
+            
         });
 
     } catch (error) {
