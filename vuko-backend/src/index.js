@@ -9,9 +9,15 @@ const userRoutes = require('./routes/userRoutes.js');
 const app = express(); 
 connectDB();          
 
+
 // 3. Ejecutamos los middlewares (Configuraciones globales)
-app.use(cors());        
-app.use(express.json()); 
+app.use(cors({
+    origin: '*', 
+    allowedHeaders: ['Content-Type', 'x-auth-token'], 
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true
+}));
+app.use(express.json());
 
 // 4. Rutas
 app.use('/api/users', userRoutes);

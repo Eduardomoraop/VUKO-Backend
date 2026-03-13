@@ -3,7 +3,7 @@ const jwt = require ('jsonwebtoken'); //Importamos la libreria
 
 const validateJWT = (req, resp, next) =>{
     // Buscamos el token en los headers de la peticion
-    const token = req.header('x-token');
+    const token = req.header('x-auth-token');
 
     // Si no hay token no lo dejamos pasar
     if(!token){
