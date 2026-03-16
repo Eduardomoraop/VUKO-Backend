@@ -1,0 +1,43 @@
+{
+  "info": {
+    "_postman_id": "26cbd88b-f516-4184-b916-7ba222bdd9ba",
+    "name": "VUKO-AI-API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "50057501",
+    "_collection_link": "https://go.postman.co/collection/50057501-26cbd88b-f516-4184-b916-7ba222bdd9ba?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "New Request",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "New Request",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "New Request",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "New Request",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    }
+  ]
+}

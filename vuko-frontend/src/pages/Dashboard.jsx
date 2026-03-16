@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import Swal from 'sweetalert2'
 
 function Dashboard() {
   const navigate = useNavigate()
@@ -14,7 +15,12 @@ function Dashboard() {
   const getCareerAdvice = async () => {
     const token = localStorage.getItem('token');
     if (!token) {
-      alert("Primero haz login para obtener tu token.");
+      Swal.fire({
+        title: '¡Alerta!',
+        text: 'Primero haz login para obtener tu consejo',
+        icon: 'warning',
+        confirmButtonColor: '#6f42c1'
+      })
       navigate('/');
       return;
     }
@@ -31,10 +37,20 @@ function Dashboard() {
       if (response.ok) {
         setAdvice(result.msg);
       } else {
-        alert("Error de la IA: " + result.msg);
+        Swal.fire({
+          title: 'Error de la IA',
+          text: result.msg || 'No pudimos conectar con el asesor en este momento',
+          icon: 'error',
+          confirmButtonColor: '#dc3545'
+        });
       }
     } catch {
-      alert("Error conectando con la IA de VUKO.");
+      Swal.fire({
+        title: 'Fallo de conexión',
+        text: 'Revisa tu conexión o intenta mas tarde. VUKO esta fuera de linea',
+        icon: 'error',
+        confirmButtonColor: '#dc3545'
+      })
     }
   };
 
@@ -52,37 +68,57 @@ function Dashboard() {
         body: JSON.stringify({ career: newCareer })
       });
       if (response.ok) {
-        alert("¡Profesion Actualizada! 💪");
+        Swal.fire({
+          title: '¡Genial!',
+          text: 'Tu profesión se actualizó correctamente 💪',
+          icon: 'success',
+          confirmButtonColor:'#007bff',
+          timer: 3000
+        });
         setNewCareer("");
       } else {
-        alert("No se pudo actualizar la profesión.");
+        Swal.fire({
+          title: '¡Alerta!',
+          text: 'No se pudo actualizar la profesión',
+          icon: 'error',
+          confirmButtonColor: '#dc3545'
+        });
       }
     } catch {
-      alert("Error al actualizar ❌"); 
+      Swal.fire('Error', 'Hubo un fallo de conexión ❌', 'error'); 
     }
   };
 
   // Funcion para borrar la cuenta (DELETE)
-  const handleDeleteAccount = async () => {
-    const confirmar = window.confirm("¿Realmente quieres borrar tu cuenta?⁉️ No hay marcha atrás.");
-    if (!confirmar) return;
-
-    const token = localStorage.getItem('token');
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/delete`, {
-        method: 'DELETE',
-        headers: { 'x-auth-token': token }
-      });
-      if (response.ok) {
-        alert("Cuenta eliminada con éxito. 👋");
-        localStorage.removeItem('token');
-        navigate('/');
+const handleDeleteAccount = async () => {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "¡No podrás revertir esto y perderás tu acceso a VUKO!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc3545',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Sí, borrar cuenta',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const token = localStorage.getItem('token');
+        try {
+          const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/delete`, {
+            method: 'DELETE',
+            headers: { 'x-auth-token': token }
+          });
+          if (response.ok) {
+            Swal.fire('Eliminado', 'Tu cuenta ha sido borrada.', 'success');
+            localStorage.removeItem('token');
+            navigate('/');
+          }
+        } catch {
+          Swal.fire('Error', 'No pudimos borrar la cuenta', 'error');
+        }
       }
-    } catch {
-      alert("Error al intentar eliminar la cuenta.");
-    }
+    });
   };
-
   return (
     <div className="card">
       <h2>Tu Asesor IA 🤖</h2>
