@@ -11,10 +11,9 @@ const registerUser = async (req, resp) => {
 
         const newUser = new User(req.body);
 
-        // 1. GUARDADO (Primero aseguramos la base de datos)
+        
         await newUser.save();
-
-        // 2. IA (Opcional: Si falla, que no rompa el registro)
+        
         let aiAdvice = "Generando consejo...";
         try {
             aiAdvice = await getCareerAdvice(newUser);
@@ -29,10 +28,10 @@ const registerUser = async (req, resp) => {
         });
 
     } catch (error) {
-        // ESTO ES LO MÁS IMPORTANTE:
+        
         console.error("ERROR EN REGISTRO:", error); 
         
-        // Enviamos el mensaje real al Frontend para dejar de adivinar
+        
         resp.status(400).json({ 
             ok: false, 
             msg: error.message || "Error desconocido en el servidor" 
@@ -97,20 +96,18 @@ const updateUser = async (req, resp) => { // Usamos 'resp' para ser consistentes
         
         const uid = req.uid || req.id; 
         
-        const { password, email, ...campos } = req.body;
+        const { password, email, ...campos } = req.body;        
         
-        // Usamos findByIdAndUpdate con la opción moderna
         const userUpdated = await User.findByIdAndUpdate(uid, campos, { returnDocument: 'after' });
 
         if (!userUpdated){
             return resp.status(404).json({ ok: false, msg: 'Usuario no encontrado' });
         }
-
-        // Cambiamos 'res' por 'resp'
+        
         resp.json({ ok: true, msg: 'Perfil actualizado con exito', user: userUpdated });
         
     } catch (error) {
-        console.log("ERROR EN UPDATE:", error); // Esto te dirá el fallo exacto en la terminal
+        console.log("ERROR EN UPDATE:", error); 
         resp.status(500).json({ ok: false, msg: 'Error al actualizar usuario' });
     }
 }
@@ -130,16 +127,16 @@ const deleteUser = async (req, resp) => {
 //Funcion para para consejo de baja demanda
 const getVukoAdvice = async (req, resp) =>{
     try {
-        const uid = req.uid; //Extraemos el ID que dejo ek middleware en la peticion
+        const uid = req.uid; 
 
-        const user = await User.findById(uid); //Buscamos el usuario para tener la info actualizada
+        const user = await User.findById(uid); 
         if (!user){
             return resp.status(404).json({ok: false, msg: 'Usuario no encontrado'});
         }
 
        //Llamada al servicio de la IA (Reutilizacion de la logica)
        
-        const aiAdvice = await getCareerAdvice(user); //Pasamos el objeto 'user' completo como se hace en el registro
+        const aiAdvice = await getCareerAdvice(user); 
 
         resp.status(200).json({
             ok: true,

@@ -64,7 +64,7 @@ function Dashboard() {
         headers: {
           'Content-type': 'application/json',
           'x-auth-token': token
-        }, // <--- AQUÍ ESTABA EL ENREDO, faltaba esta coma
+        }, 
         body: JSON.stringify({ career: newCareer })
       });
       if (response.ok) {

@@ -20,7 +20,7 @@ const getCareerAdvice = async (userData) => {
         // Log informativo 
         console.log("ℹ️ VUKO.AI: Usando lógica de consejo local (Servicio externo no disponible).");
         
-        // Fallback inteligente: El usuario recibe algo útil 
+        // Fallback inteligente
         if (userData.experience >= 5) {
             return "Estrategia Senior: Enfócate en el liderazgo de equipos y optimización de presupuestos con Growth Hacking.";
         } else {

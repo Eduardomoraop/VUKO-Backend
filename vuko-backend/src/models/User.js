@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt'); //Importacion de la libreria de seguridad 
+const bcrypt = require('bcrypt'); 
 
 const UserSchema = new mongoose.Schema({
     name: { type: String, required: true },
@@ -11,14 +11,12 @@ const UserSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 // Bloque de seguridad actualizado
-UserSchema.pre('save', async function() {
-    // Si la contraseña no se ha modificado, terminamos la función
+UserSchema.pre('save', async function() {   
     if (!this.isModified('password')) return;
 
     try {
         const salt = await bcrypt.genSalt(10);
-        this.password = await bcrypt.hash(this.password, salt);
-        // NOTA: En funciones async de Mongoose ya no hace falta llamar a next()
+        this.password = await bcrypt.hash(this.password, salt);        
     } catch (error) {
         throw new Error('Error al hashear la contraseña');
     }

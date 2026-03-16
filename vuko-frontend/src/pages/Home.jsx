@@ -61,7 +61,7 @@ function Home({ serverStatus }) {
       if (response.ok){
         alert("¡Bienvenido de Nuevo! 🔓");        
         localStorage.setItem('token', result.token);
-        navigate('/dashboard'); // Salto automático al dashboard
+        navigate('/dashboard'); 
       } else {
         alert("Error de login: " + (result.msg || "Credenciales invalidas"));
       }
