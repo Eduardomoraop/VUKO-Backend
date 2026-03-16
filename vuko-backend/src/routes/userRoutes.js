@@ -14,7 +14,7 @@ const{fieldValidator} = require('../middleware/fieldValidator.js')
 
 // 2. DEFINICIÓN DE RUTAS
 
-// GET: Obtener la lista de todos los usuarios (útil para pruebas)
+// GET: Obtener la lista de todos los usuarios 
 router.get('/', validateJWT, getUsers);
 
 // GET: Obtener consejo de la IA personalizado
@@ -34,7 +34,6 @@ router.post('/register',
 );
 
 // POST: Login de usuario
-// Esta es la ruta que recibirá el email/password y devolverá el JWT
 router.post('/login',
     [
         check('email','Debes insertar un correo electronico valido').isEmail(),
@@ -48,8 +47,7 @@ router.post('/login',
 router.put('/update', 
     [
          validateJWT,
-         check('name', 'El nombre es obligatorio').not().isEmpty(),
-         check('career', 'Profesion requerida').not().isEmpty(),
+         check('career', 'Profesión requerida').not().isEmpty(), 
          fieldValidator
     ],    
     updateUser
