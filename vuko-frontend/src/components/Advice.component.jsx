@@ -6,10 +6,8 @@ import { userAdvice } from "../services/userService";
 export function Advice() {
   const navigate = useNavigate();
 
-  // Estado para el consejo
   const [advice, setAdvice] = useState("");
 
-  // Funcion para la IA
   const getCareerAdvice = async () => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -23,8 +21,20 @@ export function Advice() {
       return;
     }
 
-    userAdvice(token, setAdvice, Swal);
+    const result = await userAdvice(token);
+
+    if (result.msg) {
+      setAdvice(result.msg);
+    } else {
+      Swal.fire({
+        title: "Error de la IA",
+        text: result.msg || "No pudimos conectar con el asesor en este momento",
+        icon: "error",
+        confirmButtonColor: "#dc3545",
+      });
+    }
   };
+
   return (
     <>
       <h2>Tu Asesor IA 🤖</h2>
