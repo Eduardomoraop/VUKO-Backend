@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { registerUser } from '../services/userService'
+import Swal from 'sweetalert2'
 
 function Home({ serverStatus }) {
   const navigate = useNavigate()
@@ -25,7 +27,7 @@ function Home({ serverStatus }) {
 
   const handleSubmit = async (e) =>{
     e.preventDefault();
-    try {
+   /*  try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/register`, {
         method: 'POST', 
         headers: { 'Content-Type': 'application/json' },
@@ -41,6 +43,31 @@ function Home({ serverStatus }) {
       }
     } catch {
       alert("No se pudo conectar con el servidor.");
+    } */
+
+    try {
+      const {name,email,password,career} = formData
+console.log(formData)
+      await registerUser(name,email,password,career)
+
+      //alert("¡Usuario registrado con éxito! 🎉"); 
+
+              Swal.fire({
+              title: '¡Genial!',
+              text: 'Usuario registrado con éxito!💪',
+              icon: 'success',
+              confirmButtonColor:'#007bff',
+              timer: 3000
+            });
+    } catch (error) {
+      //alert("Error:" + error.message);
+      Swal.fire({
+              title: '¡Genial!',
+              text: "Error:" + error.message,
+              icon: 'Error',
+              confirmButtonColor:'#007bff',
+              timer: 3000
+            });      
     }
   };
  
