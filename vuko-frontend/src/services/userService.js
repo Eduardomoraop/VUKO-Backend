@@ -61,9 +61,11 @@ export async function registerUser(name, email, password, career) {
   if (password.length < 4) throw new Error("password length is lower than 4");
 
   return fetch(`${import.meta.env.VITE_API_URL}/api/users/register`, {
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
+
     body: JSON.stringify({ name, email, password, career }),
   })
     .catch(() => {
