@@ -7,7 +7,7 @@ const getCareerAdvice = async (userData) => {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                contents: [{ parts: [{ text: `Eres mentor de marketing. Aconseja a ${userData.name} con ${userData.experience} años de experiencia.` }] }]
+                contents: [{ parts: [{ text: `Eres mentor de carrera. Aconseja a ${userData.name} que trabaja como ${userData.career} con ${userData.experience} años de experiencia.` }] }]
             })
         });
 
@@ -17,10 +17,8 @@ const getCareerAdvice = async (userData) => {
         return data.candidates[0].content.parts[0].text;
 
     } catch (error) {
-        // Log informativo 
         console.log("ℹ️ VUKO.AI: Usando lógica de consejo local (Servicio externo no disponible).");
         
-        // Fallback inteligente
         if (userData.experience >= 5) {
             return "Estrategia Senior: Enfócate en el liderazgo de equipos y optimización de presupuestos con Growth Hacking.";
         } else {
