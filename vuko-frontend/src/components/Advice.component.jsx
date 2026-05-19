@@ -21,14 +21,13 @@ export function Advice() {
       return;
     }
 
-    const result = await userAdvice(token);
-
-    if (result.ok && result.msg) {
-      setAdvice(result.msg);
-    } else {
+    try {
+      const result = await userAdvice(token);
+      setAdvice(result.msg || result.message);
+    } catch (error) {
       Swal.fire({
-        title: "Error de la IA",
-        text: result.msg || "No pudimos conectar con el asesor en este momento",
+        title: "¡Alerta!",
+        text: error.message || "No pudimos conectar con el asesor en este momento",
         icon: "error",
         confirmButtonColor: "#dc3545",
       });

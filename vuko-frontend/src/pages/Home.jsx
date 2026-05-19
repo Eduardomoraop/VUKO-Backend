@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { registerUser } from "../services/userService";
+import { registerUser, loginUser } from "../services/userService";
 import Swal from "sweetalert2";
 
 function Home({ serverStatus }) {
@@ -30,8 +30,7 @@ function Home({ serverStatus }) {
 
     try {
       const { name, email, password, career } = formData;
-      console.log(formData);
-      await registerUser(name, email, password, career);     
+      await registerUser(name, email, password, career);
 
       Swal.fire({
         title: "¡Genial!",
@@ -41,7 +40,6 @@ function Home({ serverStatus }) {
         timer: 3000,
       });
     } catch (error) {
-      //alert("Error:" + error.message);
       Swal.fire({
         title: "Error",
         text: "Error:" + error.message,
@@ -59,42 +57,24 @@ function Home({ serverStatus }) {
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/users/login`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(loginData),
-        },
-      );
-      const result = await response.json();
-      if (response.ok) {
-        Swal.fire({
-          title: "¡Bienvenido de Nuevo!",
-          text: "Has iniciado sesión exitosamente 🔓",
-          icon: "success",
-          confirmButtonColor: "#007bff",
-          timer: 3000,
-        });
-        localStorage.setItem("token", result.token);
-        navigate("/dashboard");
-      } else {
-        Swal.fire({
-          title: "Error",
-          text: result.msg || "Credenciales inválidas",
-          icon: "error",
-          confirmButtonColor: "#007bff",
-          timer: 3000,
-        });
-      }
-    } catch {
+      const result = await loginUser(loginData.email, loginData.password);
+      localStorage.setItem("token", result.token);
       Swal.fire({
-        title: "Error",
-        text: "Error al intentar iniciar sesión",
-        icon: "error",
-        confirmButtonColor: "#007bff",
+        title: "¡Genial!",
+        text: "¡Bienvenido de Nuevo! 🔓",
+        icon: "success",
+        confirmButtonColor: "#28a745",
         timer: 3000,
+      });
+      navigate("/dashboard");
+    } catch (error) {
+      Swal.fire({
+        title: "¡Alerta!",
+        text: error.message || "Credenciales inválidas",
+        icon: "error",
+        confirmButtonColor: "#dc3545",
       });
     }
   };

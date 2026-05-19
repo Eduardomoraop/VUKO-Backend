@@ -19,14 +19,24 @@ export function DeleteAccount() {
 
     if (result.isConfirmed) {
       const token = localStorage.getItem("token");
-      const response = await userDelete(token);
 
-      if (response.ok) {
-        Swal.fire("Eliminado", "Tu cuenta ha sido borrada.", "success");
-        localStorage.removeItem("token");
-        navigate("/");
-      } else {
-        Swal.fire("Error", "No pudimos borrar la cuenta", "error");
+      try {
+        const response = await userDelete(token);
+
+        if (response.ok) {
+          Swal.fire("Eliminado", "Tu cuenta ha sido borrada.", "success");
+          localStorage.removeItem("token");
+          navigate("/");
+        } else {
+          Swal.fire("Error", "No pudimos borrar la cuenta", "error");
+        }
+      } catch (error) {
+        Swal.fire({
+          title: "¡Alerta!",
+          text: error.message || "No se pudo eliminar la cuenta",
+          icon: "error",
+          confirmButtonColor: "#dc3545",
+        });
       }
     }
   };
@@ -46,6 +56,4 @@ export function DeleteAccount() {
     </div>
   );
 }
-
-// usar try catch igual que lo hice en el, home y en el uptdateForm
  

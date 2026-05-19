@@ -36,6 +36,9 @@ export async function userAdvice(token) {
 }
 
 export async function userUpdate(token, newCareer) {
+  if (typeof token !== "string") throw new Error("token is not a string");
+  if (token.length < 1) throw new Error("token length is lower than 1");
+
   return fetch(`${import.meta.env.VITE_API_URL}/api/users/update`, {
     method: "PUT",
     headers: {
@@ -71,6 +74,9 @@ export async function userUpdate(token, newCareer) {
 }
 
 export async function userDelete(token) {
+  if (typeof token !== "string") throw new Error("token is not a string");
+  if (token.length < 1) throw new Error("token length is lower than 1");
+
   return fetch(`${import.meta.env.VITE_API_URL}/api/users/delete`, {
     method: "DELETE",
     headers: { "x-auth-token": token },
