@@ -7,7 +7,7 @@ const validateJWT = (req, resp, next) =>{
     if(!token){
         return resp.status(401).json({
             ok: false,
-            msg: 'Acceso denegado, no se proporciono un token'
+            message: 'Acceso denegado, no se proporciono un token'
         });
     }
     
@@ -22,7 +22,7 @@ const validateJWT = (req, resp, next) =>{
     } catch (error) {
         return resp.status(401).json({
             ok: false,
-            msg: 'Token no valido o expirado'
+            message: 'Token no valido o expirado'
         });
     }
 };

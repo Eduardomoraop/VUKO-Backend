@@ -34,7 +34,7 @@ const registerUser = async (req, resp) => {
         
         resp.status(400).json({ 
             ok: false, 
-            msg: error.message || "Error desconocido en el servidor" 
+            message: error.message || "Error desconocido en el servidor" 
         });         
     }    
 };
@@ -45,7 +45,7 @@ const getUsers = async (req, resp) => {
         const users = await User.find();
         resp.status(200).json({ ok: true, users });
     } catch (error) {        
-        resp.status(500).json({ ok: false, msg: 'Error al obtener usuarios' });        
+        resp.status(500).json({ ok: false, message: 'Error al obtener usuarios' });        
     }
 };
 
@@ -57,13 +57,13 @@ const loginUser =async (req,resp) => {
         //Verificamos si existe el usuario
         const user = await User.findOne({ email });
         if (!user) {
-            return resp.status(404).json({ ok: false, msg: "Usuario no encontrado" });
+            return resp.status(404).json({ ok: false, message: "Usuario no encontrado" });
         }
 
         //Verificamos si la contraseña coincide con el hash de la DB
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword){
-            return resp.status(401).json({ok: false, msg: 'Contraseña incorrecta'});
+            return resp.status(401).json({ok: false, message: 'Contraseña incorrecta'});
         }
 
         //Generamos el token (JWT) 
@@ -85,7 +85,7 @@ const loginUser =async (req,resp) => {
     
     } catch (error) {
         console.log("EL ERROR REAL ES:", error); 
-        resp.status(500).json({ ok: false, msg: "Error en el proceso de login" });
+        resp.status(500).json({ ok: false, message: "Error en el proceso de login" });
     }
 };
 
@@ -101,14 +101,14 @@ const updateUser = async (req, resp) => { // Usamos 'resp' para ser consistentes
         const userUpdated = await User.findByIdAndUpdate(uid, campos, { returnDocument: 'after' });
 
         if (!userUpdated){
-            return resp.status(404).json({ ok: false, msg: 'Usuario no encontrado' });
+            return resp.status(404).json({ ok: false, message: 'Usuario no encontrado' });
         }
         
-        resp.json({ ok: true, msg: 'Perfil actualizado con exito', user: userUpdated });
+        resp.json({ ok: true, message: 'Perfil actualizado con exito', user: userUpdated });
         
     } catch (error) {
         console.log("ERROR EN UPDATE:", error); 
-        resp.status(500).json({ ok: false, msg: 'Error al actualizar usuario' });
+        resp.status(500).json({ ok: false, message: 'Error al actualizar usuario' });
     }
 }
 //Funcion para borrar usuario 
@@ -117,10 +117,10 @@ const deleteUser = async (req, resp) => {
         const uid = req.uid;
         await User.findByIdAndDelete(uid);
 
-        resp.json({ok: true, msg: 'Usuario eliminado correctamente de VUKO.ai'});
+        resp.json({ok: true, message: 'Usuario eliminado correctamente de VUKO.ai'});
 
     } catch (error) {
-        resp.status(500).json({ ok: false, msg: 'Error al eliminar usuario'});
+        resp.status(500).json({ ok: false, message: 'Error al eliminar usuario'});
     }    
 }
 
@@ -131,7 +131,7 @@ const getVukoAdvice = async (req, resp) =>{
 
         const user = await User.findById(uid); 
         if (!user){
-            return resp.status(404).json({ok: false, msg: 'Usuario no encontrado'});
+            return resp.status(404).json({ok: false, message: 'Usuario no encontrado'});
         }
 
        //Llamada al servicio de la IA (Reutilizacion de la logica)
@@ -140,7 +140,7 @@ const getVukoAdvice = async (req, resp) =>{
 
         resp.status(200).json({
             ok: true,
-            msg: aiAdvice,
+            message: aiAdvice,
             
         });
 
@@ -148,7 +148,7 @@ const getVukoAdvice = async (req, resp) =>{
         console.log("Error en getVukoAdvice:", error);
         resp.status(500).json({
             ok: false,
-            msg: 'No se pudo generar el consejo'
+            message: 'No se pudo generar el consejo'
         });                
     }
 }

@@ -59,8 +59,10 @@ function Home({ serverStatus }) {
     e.preventDefault();
 
     try {
-      const result = await loginUser(loginData.email, loginData.password);
+      const { email, password } = loginData;
+      const result = await loginUser(email, password);
       localStorage.setItem("token", result.token);
+      
       Swal.fire({
         title: "¡Genial!",
         text: "¡Bienvenido de Nuevo! 🔓",

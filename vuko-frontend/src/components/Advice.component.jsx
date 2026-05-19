@@ -27,7 +27,8 @@ export function Advice() {
     } catch (error) {
       Swal.fire({
         title: "¡Alerta!",
-        text: error.message || "No pudimos conectar con el asesor en este momento",
+        text:
+          error.message || "No pudimos conectar con el asesor en este momento",
         icon: "error",
         confirmButtonColor: "#dc3545",
       });

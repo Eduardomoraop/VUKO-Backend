@@ -25,7 +25,7 @@ app.use('/api/users', userRoutes);
 app.get('/', (req, res) => {
     res.status(200).json({
         ok: true,
-        msg: 'Bienvenido a la API de VUKO.ai',
+        message: 'Bienvenido a la API de VUKO.ai',
         author: 'Eduardo Morao'
     });
 });
