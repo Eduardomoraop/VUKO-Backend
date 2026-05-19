@@ -62,9 +62,9 @@ console.log(formData)
     } catch (error) {
       //alert("Error:" + error.message);
       Swal.fire({
-              title: '¡Genial!',
+              title: 'Error',
               text: "Error:" + error.message,
-              icon: 'Error',
+              icon: 'error',
               confirmButtonColor:'#007bff',
               timer: 3000
             });      

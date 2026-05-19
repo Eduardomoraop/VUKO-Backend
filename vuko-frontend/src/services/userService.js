@@ -26,7 +26,7 @@ export async function userUpdate(token, newCareer) {
         body: JSON.stringify({ career: newCareer }),
       }
     );
-    return response;
+    return response.json().then(data => ({ ok: response.ok, ...data }));
   } catch {
     return { ok: false, msg: "Error de conexión" };
   }
@@ -41,7 +41,7 @@ export async function userDelete(token) {
         headers: { "x-auth-token": token },
       }
     );
-    return response;
+    return response.json().then(data => ({ ok: response.ok, ...data }));
   } catch {
     return { ok: false, msg: "Error de conexión" };
   }

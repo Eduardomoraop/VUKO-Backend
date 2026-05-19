@@ -23,7 +23,7 @@ export function Advice() {
 
     const result = await userAdvice(token);
 
-    if (result.msg) {
+    if (result.ok && result.msg) {
       setAdvice(result.msg);
     } else {
       Swal.fire({
