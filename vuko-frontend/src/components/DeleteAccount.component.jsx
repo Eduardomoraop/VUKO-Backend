@@ -46,3 +46,6 @@ export function DeleteAccount() {
     </div>
   );
 }
+
+// usar try catch igual que lo hice en el, home y en el uptdateForm
+ 

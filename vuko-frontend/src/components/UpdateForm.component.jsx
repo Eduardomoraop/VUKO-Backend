@@ -8,9 +8,9 @@ export function UpdateForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
-    const result = await userUpdate(token, newCareer);
 
-    if (result.ok) {
+    try {
+      await userUpdate(token, newCareer);
       Swal.fire({
         title: "¡Genial!",
         text: "Tu profesión se actualizó correctamente 💪",
@@ -19,10 +19,10 @@ export function UpdateForm() {
         timer: 3000,
       });
       setNewCareer("");
-    } else {
+    } catch (error) {
       Swal.fire({
         title: "¡Alerta!",
-        text: result.msg || "No se pudo actualizar la profesión",
+        text: error.message || "No se pudo actualizar la profesión",
         icon: "error",
         confirmButtonColor: "#dc3545",
       });
