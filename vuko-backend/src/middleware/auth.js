@@ -1,5 +1,4 @@
-const { request } = require('express')
-const jwt = require ('jsonwebtoken'); 
+const jwt = require('jsonwebtoken'); 
 
 const validateJWT = (req, resp, next) =>{    
     const token = req.header('x-auth-token');

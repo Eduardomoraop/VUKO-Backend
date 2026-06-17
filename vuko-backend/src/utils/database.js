@@ -6,6 +6,7 @@ const connectDB = async () => {
     console.log(`✅ VUKO.ai conectado a la DB: ${db.connection.name}`);
   } catch (error) {
     console.error('❌ Error en la conexión:', error.message);
+    process.exit(1);
   }
 };
 

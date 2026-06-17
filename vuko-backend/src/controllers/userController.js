@@ -1,19 +1,17 @@
 const User = require('../models/User');
-const { getCareerAdvice } = require('../services/aiService'); 
-const bcrypt= require ('bcrypt');
-const jwt = require ('jsonwebtoken');
+const { getCareerAdvice } = require('../services/aiService');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
-// Función para registrar usuario
 const registerUser = async (req, resp) => {
     try {
-        // Log para ver qué llega exactamente al servidor
-        console.log("Cuerpo recibido:", req.body); 
+        console.log("Cuerpo recibido:", req.body);
 
-        const newUser = new User(req.body);
+        const { name, email, password, career, experience, skills } = req.body;
+        const newUser = new User({ name, email, password, career, experience, skills });
 
-        
         await newUser.save();
-        
+
         let aiAdvice = "Generando consejo...";
         try {
             aiAdvice = await getCareerAdvice(newUser);
@@ -21,127 +19,117 @@ const registerUser = async (req, resp) => {
             console.log("Error en IA:", iaError.message);
         }
 
-        resp.status(201).json({ 
-            ok: true, 
-            user: newUser,
-            vukoAdvice: aiAdvice 
+        const userObject = newUser.toObject();
+        delete userObject.password;
+
+        resp.status(201).json({
+            ok: true,
+            user: userObject,
+            vukoAdvice: aiAdvice
         });
 
     } catch (error) {
-        
-        console.error("ERROR EN REGISTRO:", error); 
-        
-        
-        resp.status(400).json({ 
-            ok: false, 
-            message: error.message || "Error desconocido en el servidor" 
-        });         
-    }    
+        console.error("ERROR EN REGISTRO:", error);
+
+        resp.status(400).json({
+            ok: false,
+            message: error.message || "Error desconocido en el servidor"
+        });
+    }
 };
 
-// Funcion para obtener todos los usuarios
 const getUsers = async (req, resp) => {
     try {
         const users = await User.find();
         resp.status(200).json({ ok: true, users });
-    } catch (error) {        
-        resp.status(500).json({ ok: false, message: 'Error al obtener usuarios' });        
+    } catch (error) {
+        resp.status(500).json({ ok: false, message: 'Error al obtener usuarios' });
     }
 };
 
-// Funcion para login de usuarios
-const loginUser =async (req,resp) => {
+const loginUser = async (req, resp) => {
     try {
-        const {email, password} = req.body;
+        const { email, password } = req.body;
 
-        //Verificamos si existe el usuario
         const user = await User.findOne({ email });
         if (!user) {
             return resp.status(404).json({ ok: false, message: "Usuario no encontrado" });
         }
 
-        //Verificamos si la contraseña coincide con el hash de la DB
         const validPassword = await bcrypt.compare(password, user.password);
-        if (!validPassword){
-            return resp.status(401).json({ok: false, message: 'Contraseña incorrecta'});
+        if (!validPassword) {
+            return resp.status(401).json({ ok: false, message: 'Contraseña incorrecta' });
         }
 
-        //Generamos el token (JWT) 
-        const token= jwt.sign(
-            {id: user._id, role: user.role},
+        const token = jwt.sign(
+            { id: user._id, role: user.role },
             process.env.JWT_SECRET,
-            {expiresIn:'24h'}
+            { expiresIn: '24h' }
         );
 
         resp.status(200).json({
-            ok:true,
+            ok: true,
             user: {
-                name:user.name,
+                name: user.name,
                 email: user.email,
                 role: user.role
             },
             token
         });
-    
+
     } catch (error) {
-        console.log("EL ERROR REAL ES:", error); 
+        console.log("EL ERROR REAL ES:", error);
         resp.status(500).json({ ok: false, message: "Error en el proceso de login" });
     }
 };
 
-
-// Funcion para Actualizar usuario
-const updateUser = async (req, resp) => { // Usamos 'resp' para ser consistentes
+const updateUser = async (req, resp) => {
     try {
-        
-        const uid = req.uid || req.id; 
-        
-        const { password, email, ...campos } = req.body;        
-        
-        const userUpdated = await User.findByIdAndUpdate(uid, campos, { returnDocument: 'after' });
+        const uid = req.uid;
 
-        if (!userUpdated){
+        const { name, career, experience, skills } = req.body;
+
+        const userUpdated = await User.findByIdAndUpdate(uid, { name, career, experience, skills }, { returnDocument: 'after' });
+
+        if (!userUpdated) {
             return resp.status(404).json({ ok: false, message: 'Usuario no encontrado' });
         }
-        
+
         resp.json({ ok: true, message: 'Perfil actualizado con exito', user: userUpdated });
-        
+
     } catch (error) {
-        console.log("ERROR EN UPDATE:", error); 
+        console.log("ERROR EN UPDATE:", error);
         resp.status(500).json({ ok: false, message: 'Error al actualizar usuario' });
     }
 }
-//Funcion para borrar usuario 
+
 const deleteUser = async (req, resp) => {
     try {
         const uid = req.uid;
         await User.findByIdAndDelete(uid);
 
-        resp.json({ok: true, message: 'Usuario eliminado correctamente de VUKO.ai'});
+        resp.json({ ok: true, message: 'Usuario eliminado correctamente de VUKO.ai' });
 
     } catch (error) {
-        resp.status(500).json({ ok: false, message: 'Error al eliminar usuario'});
-    }    
+        resp.status(500).json({ ok: false, message: 'Error al eliminar usuario' });
+    }
 }
 
-//Funcion para para consejo de baja demanda
-const getVukoAdvice = async (req, resp) =>{
+const getVukoAdvice = async (req, resp) => {
     try {
-        const uid = req.uid; 
+        const uid = req.uid;
 
-        const user = await User.findById(uid); 
-        if (!user){
-            return resp.status(404).json({ok: false, message: 'Usuario no encontrado'});
+        const user = await User.findById(uid);
+        if (!user) {
+            return resp.status(404).json({ ok: false, message: 'Usuario no encontrado' });
         }
 
-       //Llamada al servicio de la IA (Reutilizacion de la logica)
-       
-        const aiAdvice = await getCareerAdvice(user); 
+        const aiAdvice = await getCareerAdvice(user);
 
         resp.status(200).json({
             ok: true,
             message: aiAdvice,
-            
+
         });
 
     } catch (error) {
@@ -149,7 +137,7 @@ const getVukoAdvice = async (req, resp) =>{
         resp.status(500).json({
             ok: false,
             message: 'No se pudo generar el consejo'
-        });                
+        });
     }
 }
 
